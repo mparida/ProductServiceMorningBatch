@@ -1,7 +1,9 @@
 package com.scaler.productservicemorningbatch.controllers;
 
 import com.scaler.productservicemorningbatch.models.Product;
+import com.scaler.productservicemorningbatch.services.ProductService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +12,13 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private ProductService productService;
-    ProductController(ProductService productService) {
+    ProductController (ProductService productService) {
         this.productService = productService;
     }
     //localhost:8080/products/10
     @GetMapping("/{}")
     public Product getPrductById(@PathVariable("id") Long id){
+
         return new Product();
     }
 
