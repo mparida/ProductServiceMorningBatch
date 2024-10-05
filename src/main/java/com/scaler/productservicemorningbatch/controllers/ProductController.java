@@ -9,7 +9,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-
+    private ProductService productService;
+    ProductController(ProductService productService) {
+        this.productService = productService;
+    }
     //localhost:8080/products/10
     @GetMapping("/{}")
     public Product getPrductById(@PathVariable("id") Long id){
