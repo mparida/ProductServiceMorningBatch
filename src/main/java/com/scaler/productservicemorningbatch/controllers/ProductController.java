@@ -16,10 +16,9 @@ public class ProductController {
         this.productService = productService;
     }
     //localhost:8080/products/10
-    @GetMapping("/{}")
+    @GetMapping("/{id}")
     public Product getPrductById(@PathVariable("id") Long id){
-
-        return new Product();
+        return productService.getProductById(id);
     }
 
     //localhost:8080/products
