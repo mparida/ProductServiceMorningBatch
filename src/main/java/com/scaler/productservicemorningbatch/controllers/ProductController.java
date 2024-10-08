@@ -24,7 +24,7 @@ public class ProductController {
     //localhost:8080/products
     @GetMapping()
     public List<Product> getAllProducts(){
-        return new ArrayList<Product>();
+        return productService.getAllProducts();
     }
 
     //Create Product
