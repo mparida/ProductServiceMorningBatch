@@ -1,7 +1,11 @@
 package com.scaler.productservicemorningbatch.controllers;
 
+import com.scaler.productservicemorningbatch.dtos.ProductDto;
 import com.scaler.productservicemorningbatch.models.Product;
 import com.scaler.productservicemorningbatch.services.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,8 +21,9 @@ public class ProductController {
     }
     //localhost:8080/products/10
     @GetMapping("/{id}")
-    public Product getPrductById(@PathVariable("id") Long id){
-        return productService.getProductById(id);
+    public ResponseEntity<Product> getPrductById(@PathVariable("id") Long id){
+        Product product = productService.getProductById(id);
+        return new ResponseEntity<Product>(product, HttpStatus.NOT_FOUND);
     }
 
     //localhost:8080/products
@@ -40,8 +45,8 @@ public class ProductController {
 
     //Replace a product
     @PutMapping("/{id}")
-    public Product replaceProduct(@PathVariable Long id, @RequestBody Product product){
-        return new Product();
+    public Product replaceProduct(@PathVariable Long id, @RequestBody ProductDto product){
+        return productService.replaceProduct(id, product);
     }
 
     @DeleteMapping("/{id}")

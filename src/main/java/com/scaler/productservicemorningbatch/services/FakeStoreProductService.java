@@ -1,10 +1,12 @@
 package com.scaler.productservicemorningbatch.services;
 
-import com.scaler.productservicemorningbatch.dtos.FakeStoreProductDto;
+import com.scaler.productservicemorningbatch.dtos.ProductDto;
 import com.scaler.productservicemorningbatch.models.Category;
 import com.scaler.productservicemorningbatch.models.Product;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpMessageConverterExtractor;
+import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class FakeStoreProductService implements ProductService {
         this.restTemplate = restTemplate;
     }
 
-    private Product convertFakeStoreProdyctDtoToProduct(FakeStoreProductDto fdto){
+    private Product convertFakeStoreProdyctDtoToProduct(ProductDto fdto){
         Product product = new Product();
         product.setId(fdto.getId());
         product.setDescription(fdto.getDescription());
@@ -32,7 +34,7 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getProductById(Long id) {
         //Call Fake store api to get the product with given Id
-        FakeStoreProductDto FakeStoreProductResponseEntity = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
+        ProductDto FakeStoreProductResponseEntity = restTemplate.getForObject("https://fakestoreapi.com/products/" + id, ProductDto.class);
         if (FakeStoreProductResponseEntity == null) {
             return null;
         }
@@ -42,9 +44,9 @@ public class FakeStoreProductService implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        FakeStoreProductDto [] fakeStoreProductDtos = restTemplate.getForObject("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
+        ProductDto[] fakeStoreProductDtos = restTemplate.getForObject("https://fakestoreapi.com/products", ProductDto[].class);
         List<Product> products = new ArrayList<>();
-        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos){
+        for(ProductDto fakeStoreProductDto : fakeStoreProductDtos){
             products.add(convertFakeStoreProdyctDtoToProduct(fakeStoreProductDto));
         }
         return products;
@@ -56,11 +58,14 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product replaceProduct(Long id, Product product) {
+    public Product replaceProduct(Long id, ProductDto product) {
         //Put method
         //Replace the product with the given id with input product and return the updated product in the output
-
-        return null;
+        //Put in RestTemplate is void, so we figured out how to use execute method from a sample Post method
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(product, ProductDto.class);
+        HttpMessageConverterExtractor<ProductDto> responseExtractor = new HttpMessageConverterExtractor(ProductDto.class, restTemplate.getMessageConverters());
+        ProductDto fakeStoreProductDto =  restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PUT, requestCallback, responseExtractor);
+        return convertFakeStoreProdyctDtoToProduct(fakeStoreProductDto);
     }
 
     @Override
