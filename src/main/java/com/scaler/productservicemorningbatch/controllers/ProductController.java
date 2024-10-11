@@ -1,6 +1,8 @@
 package com.scaler.productservicemorningbatch.controllers;
 
 import com.scaler.productservicemorningbatch.dtos.ProductDto;
+import com.scaler.productservicemorningbatch.excepptions.InvalidProductIdException;
+import com.scaler.productservicemorningbatch.excepptions.ProductControllerSpecificException;
 import com.scaler.productservicemorningbatch.models.Product;
 import com.scaler.productservicemorningbatch.services.ProductService;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,7 @@ public class ProductController {
     }
     //localhost:8080/products/10
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getPrductById(@PathVariable("id") Long id){
+    public ResponseEntity<Product> getPrductById(@PathVariable("id") Long id) throws InvalidProductIdException {
         //throw new RuntimeException("Something Went Wrong");
         /*Product product = null;
         try {
@@ -32,6 +34,7 @@ public class ProductController {
         return new ResponseEntity<Product>(product, HttpStatus.NOT_FOUND);*/
         Product product = productService.getProductById(id);
         return new ResponseEntity<Product>(product, HttpStatus.OK);
+
     }
 
     //localhost:8080/products
@@ -60,5 +63,11 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id){
         return;
+    }
+
+    @ExceptionHandler(ProductControllerSpecificException.class)
+    public ResponseEntity<Void> handleProductControllerSpecificException(){
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
     }
 }
