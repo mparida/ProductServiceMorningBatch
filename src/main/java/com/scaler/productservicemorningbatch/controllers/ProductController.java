@@ -22,8 +22,16 @@ public class ProductController {
     //localhost:8080/products/10
     @GetMapping("/{id}")
     public ResponseEntity<Product> getPrductById(@PathVariable("id") Long id){
+        //throw new RuntimeException("Something Went Wrong");
+        /*Product product = null;
+        try {
+            product = productService.getProductById(id);
+        } catch (Exception e) {
+            System.out.println("Something went wrong");
+        }
+        return new ResponseEntity<Product>(product, HttpStatus.NOT_FOUND);*/
         Product product = productService.getProductById(id);
-        return new ResponseEntity<Product>(product, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
 
     //localhost:8080/products
